@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MOCKUP: LMS instructor surface</title>
+<!--
+  MOCKUP, not the product. Fake content only.
+  Design page: /design/lms-instructor
+  Requirements shown: R3 R9 R10 R11 R12 R13 R14 R15 R24 R25 R29 R30 R31 R38 R23 R40 R45
+  Screens: T1 apply, T2 teach home, T3 course editor, T4 text lesson, T5 video upload, T6 quiz builder,
+           T7 publish checklist and review status, T8 earnings and payouts, T9 phone width.
+  Static: no JavaScript, no external requests. Cannot be rendered by the author; unverified visually.
+-->
+<style>
+  :root{--ink:#17202a;--mute:#52606d;--line:#cfd6dd;--bg:#f5f7f9;--card:#fff;--brand:#0b6e57;--brand-ink:#fff;--warn:#8a5a00;--warnbg:#fff4d6;--err:#a31621;--errbg:#fde8ea;--ok:#0b6e57;--okbg:#e3f4ee;--focus:#1a56db}
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg)}
+  .mockbar{background:#17202a;color:#fff;padding:8px 16px;font-size:14px;position:sticky;top:0;z-index:2}
+  .mockbar a{color:#9fe3cf;margin-right:12px}
+  main{max-width:1040px;margin:0 auto;padding:16px}
+  h1{font-size:24px;margin:8px 0}
+  h2.s{font-size:18px;margin:32px 0 4px;border-bottom:2px solid var(--ink);padding-bottom:4px}
+  p.cap{color:var(--mute);margin:0 0 12px;font-size:14px}
+  .frame{background:var(--card);border:1px solid var(--line);border-radius:8px;margin:12px 0;overflow:hidden}
+  .frame>.url{background:#eef1f4;border-bottom:1px solid var(--line);padding:6px 12px;font:13px ui-monospace,Menlo,monospace;color:var(--mute)}
+  .frame>.body{padding:16px}
+  nav.top{display:flex;gap:16px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);background:#fff}
+  nav.top .logo{font-weight:700;color:var(--brand)}
+  nav.top a{color:var(--ink)}
+  nav.top .sp{flex:1}
+  .btn{display:inline-block;min-height:44px;padding:10px 16px;border-radius:6px;border:1px solid var(--brand);background:var(--brand);color:var(--brand-ink);font-weight:600;font-size:16px}
+  .btn.sec{background:#fff;color:var(--brand)}
+  .btn.danger{background:var(--err);border-color:var(--err)}
+  .btn[aria-disabled=true]{background:#d9dee3;border-color:#d9dee3;color:#3d4852}
+  .tag{display:inline-block;padding:2px 8px;border-radius:12px;font-size:13px;border:1px solid var(--line);background:#fff}
+  .tag.free{background:var(--okbg);border-color:var(--ok);color:var(--ok)}
+  .tag.rev{background:var(--errbg);border-color:var(--err);color:var(--err)}
+  .tag.pre{background:#e8efff;border-color:var(--focus);color:#123a99}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .card{border:1px solid var(--line);border-radius:8px;padding:12px;background:#fff}
+  .cover{height:90px;background:repeating-linear-gradient(45deg,#dfe7ee,#dfe7ee 10px,#edf2f6 10px,#edf2f6 20px);border-radius:6px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:13px}
+  .skel{background:#e6eaee;border-radius:4px;height:14px;margin:8px 0}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .filters{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+  .filters label{display:block;font-size:14px;color:var(--mute)}
+  .filters input,.filters select{min-height:44px;border:1px solid #6b7785;border-radius:6px;padding:6px 10px;font-size:16px;background:#fff}
+  .banner{border-left:4px solid;padding:10px 12px;margin:8px 0;border-radius:4px}
+  .banner.info{background:#e8efff;border-color:var(--focus)}
+  .banner.warn{background:var(--warnbg);border-color:var(--warn)}
+  .banner.err{background:var(--errbg);border-color:var(--err)}
+  .banner.ok{background:var(--okbg);border-color:var(--ok)}
+  .two{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+  .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .outline{list-style:none;margin:0;padding:0}
+  .outline li{display:flex;gap:8px;align-items:center;padding:8px 4px;border-bottom:1px solid #e5e9ed;min-height:44px}
+  .outline li.cur{background:#e3f4ee;font-weight:600}
+  .progress{height:10px;background:#e3e8ec;border-radius:5px;overflow:hidden}
+  .progress>span{display:block;height:100%;background:var(--brand)}
+  .player{background:#0e1a24;color:#fff;border-radius:8px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px}
+  .q{border:1px solid var(--line);border-radius:8px;padding:12px;margin:12px 0}
+  .q fieldset{border:0;padding:0;margin:0}
+  .q legend{font-weight:600;padding:0 0 6px}
+  .opt{display:flex;gap:10px;align-items:center;min-height:44px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;margin:6px 0}
+  .opt.wrong{border-color:var(--err);background:var(--errbg)}
+  .opt.right{border-color:var(--ok);background:var(--okbg)}
+  .cert{border:6px double var(--brand);padding:32px;text-align:center;background:#fff}
+  .cert .name{font-size:28px;font-weight:700;margin:8px 0}
+  .phone{width:360px;max-width:100%;border:10px solid #17202a;border-radius:24px;overflow:hidden;background:#fff}
+  .phones{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+  .phone .in{padding:12px}
+  .phone .grid{grid-template-columns:1fr}
+  .phone nav.top{flex-wrap:wrap}
+  table{border-collapse:collapse;width:100%}
+  th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+  caption{text-align:left;font-weight:600;padding:4px 0}
+  .focus{outline:3px solid var(--focus);outline-offset:2px}
+  .note{font-size:13px;color:var(--mute)}
+  @media (max-width:760px){.grid,.three,.two{grid-template-columns:1fr}}
+</style><style>
+  .editor{display:grid;grid-template-columns:300px 1fr;gap:16px}
+  .tree{list-style:none;margin:0;padding:0}
+  .tree li{border:1px solid var(--line);border-radius:6px;padding:6px 8px;margin:6px 0;background:#fff;display:flex;gap:8px;align-items:center;min-height:44px}
+  .tree li.sec{background:#eef1f4;font-weight:600}
+  .tree li.cur{border-color:var(--brand);box-shadow:inset 3px 0 0 var(--brand)}
+  .tree .mv{margin-left:auto;display:flex;gap:4px}
+  .tree .mv span{border:1px solid var(--line);border-radius:4px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;background:#fff;font-size:13px}
+  .fld{margin:10px 0}.fld label{display:block;font-weight:600;font-size:14px}
+  .fld input,.fld textarea,.fld select{width:100%;min-height:44px;border:1px solid #6b7785;border-radius:6px;padding:8px 10px;font:inherit}
+  .fld .help{font-size:13px;color:var(--mute)}
+  .fld .errm{font-size:13px;color:var(--err)}
+  .toolbar{display:flex;gap:4px;border:1px solid #6b7785;border-bottom:0;border-radius:6px 6px 0 0;padding:4px;background:#eef1f4}
+  .toolbar span{min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:#fff;border-radius:4px}
+  .stat{border:1px solid var(--line);border-radius:8px;padding:12px;background:#fff}
+  .stat b{display:block;font-size:24px}
+  .tag.draft{background:#eef1f4}.tag.review{background:var(--warnbg);border-color:var(--warn);color:var(--warn)}
+  .check li{margin:6px 0}
+</style>
+</head>
+<body>
+<div class="mockbar" role="note"><strong>MOCKUP</strong> &middot; not the product &middot; fake data &middot;
+  <a href="#t1">T1 Apply</a><a href="#t2">T2 Teach home</a><a href="#t3">T3 Editor</a><a href="#t4">T4 Text</a><a href="#t5">T5 Video</a><a href="#t6">T6 Quiz builder</a><a href="#t7">T7 Publish</a><a href="#t8">T8 Earnings</a><a href="#t9">T9 Phone</a></div>
+<main>
+<h1>LMS instructor surface (mockup)</h1>
+<p class="cap">Routes under <code>/teach</code>. Fake courses and people. Statuses match the course lifecycle: draft, in review, published, rejected, unpublished.</p>
+
+<h2 class="s" id="t1">T1 Apply to teach (R3)</h2>
+<div class="three">
+  <div class="frame"><div class="url">/teach (not an instructor yet)</div><div class="body">
+    <h3 style="margin-top:0">Become an instructor</h3>
+    <div class="fld"><label for="st">Why do you want to teach, and what will you teach?</label><textarea id="st" rows="4"></textarea><div class="help">An admin reviews every application. 20 to 2000 characters (assumption).</div></div>
+    <span class="btn">Submit application</span>
+  </div></div>
+  <div class="frame"><div class="url">pending</div><div class="body"><span class="tag review">Pending review</span><h3>Application received</h3><p>Submitted 2026-10-14. You will see the decision here.</p></div></div>
+  <div class="frame"><div class="url">rejected</div><div class="body"><span class="tag rev">Not approved</span><h3>Application not approved</h3><p><strong>Reason from admin:</strong> Please describe your subject area. (Fake.)</p><span class="btn">Apply again</span></div></div>
+</div>
+
+<h2 class="s" id="t2">T2 Teach home (R38, R24)</h2>
+<div class="frame"><div class="url">/teach</div>
+<nav class="top" aria-label="Teach"><span class="logo">LearnHub &middot; Teach</span><a href="#t2">Courses</a><a href="#t8">Earnings</a><span class="sp"></span><span class="btn">New course</span></nav>
+<div class="body">
+  <div class="banner warn"><strong>Set up payouts to publish paid courses.</strong> Free courses are not affected. <u>Set up payouts</u></div>
+  <table><caption>Your courses</caption><thead><tr><th scope="col">Course</th><th scope="col">Status</th><th scope="col">Price</th><th scope="col">Enrolled</th><th scope="col">Completion</th><th scope="col"><span class="note">Actions</span></th></tr></thead><tbody>
+  <tr><td><a href="#t3">Applied Regression</a></td><td><span class="tag free">Published</span></td><td>$49.00</td><td>18</td><td>22%</td><td>Edit</td></tr>
+  <tr><td><a href="#t3">Time Series Basics</a></td><td><span class="tag draft">Draft</span></td><td>$39.00</td><td>0</td><td>n/a</td><td>Edit</td></tr>
+  <tr><td><a href="#t3">Survey Design</a></td><td><span class="tag review">In review</span></td><td>Free</td><td>0</td><td>n/a</td><td>View</td></tr>
+  <tr><td><a href="#t3">Plotting Basics</a></td><td><span class="tag rev">Rejected</span></td><td>Free</td><td>0</td><td>n/a</td><td>Edit</td></tr>
+  </tbody></table>
+</div></div>
+<div class="three">
+  <div class="card"><strong>Empty</strong><p>You have no courses yet.</p><span class="btn">Create your first course</span></div>
+  <div class="card"><strong>Loading</strong><div class="skel"></div><div class="skel"></div><div class="skel" style="width:60%"></div></div>
+  <div class="card"><strong>Access denied</strong><h4>This area is for instructors</h4><p>Apply to teach to get access.</p><span class="btn sec">Apply</span></div>
+</div>
+
+<h2 class="s" id="t3">T3 Course editor (R9, R10, R13, R14, R15, R25)</h2>
+<p class="cap">Route <code>/teach/courses/[courseId]</code>. Left: outline tree. Right: details of the selected item. Reorder uses visible Move up and Move down buttons, so no drag is required.</p>
+<div class="frame"><div class="url">/teach/courses/[courseId]</div><div class="body">
+  <div class="row"><h3 style="margin:0;flex:1">Time Series Basics <span class="tag draft">Draft</span></h3><span class="note" role="status">Saved 14:02</span><span class="btn sec">Preview as learner</span><span class="btn">Submit for review</span></div>
+  <div class="editor" style="margin-top:12px">
+    <div>
+      <ul class="tree" aria-label="Course outline">
+        <li class="sec">Section 1: Basics <span class="mv"><span>Up</span><span>Down</span></span></li>
+        <li class="cur">Video &middot; What is a series? <span class="tag pre">Preview</span><span class="mv"><span>Up</span><span>Down</span></span></li>
+        <li>Text &middot; Terminology <span class="mv"><span>Up</span><span>Down</span></span></li>
+        <li>Quiz &middot; Warm-up <span class="mv"><span>Up</span><span>Down</span></span></li>
+        <li class="sec">Section 2: Models</li>
+      </ul>
+      <p><span class="btn sec">Add section</span> <span class="btn sec">Add lesson or quiz</span></p>
+    </div>
+    <div>
+      <h4 style="margin-top:0">Lesson details</h4>
+      <div class="fld"><label for="lt">Title</label><input id="lt" value="What is a series?"></div>
+      <div class="fld"><label><input type="checkbox" checked> Free preview (anyone can watch)</label></div>
+      <div class="fld"><label><input type="checkbox" checked> Required for completion</label><div class="help">Optional items do not count toward progress or the certificate.</div></div>
+      <p><span class="btn danger">Delete lesson</span></p>
+      <p class="note">Deleting a lesson removes learners' progress on it. A confirm dialog names the number of learners affected.</p>
+    </div>
+  </div>
+</div></div>
+<div class="three">
+  <div class="card"><strong>Course settings (draft)</strong>
+    <div class="fld"><label for="ct">Title</label><input id="ct" value="Time Series Basics"></div>
+    <div class="fld"><label for="cp">Price (USD)</label><input id="cp" value="3" aria-invalid="true" aria-describedby="pe"><div class="errm" id="pe">Price must be 0 or between 5.00 and 199.00 (bounds from configuration).</div></div></div>
+  <div class="card"><strong>Published course editing (R15)</strong><div class="banner info">Learners are enrolled. Changes save to the live course. Deleting a lesson removes progress on that lesson only.</div></div>
+  <div class="card"><strong>Locked while in review</strong><div class="banner warn">This course is in review and cannot be edited. Withdraw the submission to edit. (Open question DQ6.)</div></div>
+</div>
+<div class="three" style="margin-top:12px">
+  <div class="card"><strong>Save error</strong><div class="banner err" role="alert">Your last change was not saved. Retry. Your text is kept on this page.</div></div>
+  <div class="card"><strong>Not your course</strong><h4>We could not find that course</h4><p>Shown for another instructor's course and for a bad address.</p></div>
+  <div class="card"><strong>Empty course</strong><p>Add your first section to start building.</p><span class="btn">Add section</span></div>
+</div>
+
+<h2 class="s" id="t4">T4 Text lesson editor (R11)</h2>
+<div class="frame"><div class="url">/teach/courses/[courseId]/items/[itemId]</div><div class="body">
+  <div class="fld"><label for="body">Lesson text</label>
+  <div class="toolbar" role="toolbar" aria-label="Formatting"><span><b>B</b></span><span><i>I</i></span><span>H2</span><span>List</span><span>Link</span><span>Image</span></div>
+  <textarea id="body" rows="6" style="border-radius:0 0 6px 6px">Terminology. A series is an ordered set of values. (Fake.)</textarea>
+  <div class="help">Allowed: headings, bold, italic, lists, links, images. Scripts and embeds are removed when saved. Images need alt text.</div></div>
+  <div class="banner warn">1 formatting element was removed because it is not allowed: script.</div>
+  <span class="btn">Save</span> <span class="btn sec">Preview</span>
+</div></div>
+
+<h2 class="s" id="t5">T5 Video upload and states (R12)</h2>
+<p class="cap">MP4 with H.264 video and AAC audio only; no transcoding. Upload goes directly from the browser to storage with a resumable link, then the server confirms the file.</p>
+<div class="three">
+  <div class="card"><strong>No video</strong><div class="fld"><label for="vf">Video file</label><input id="vf" type="file"><div class="help">MP4 (H.264 and AAC), up to the size limit shown at upload (value from configuration). Do not close this page while uploading.</div></div><span class="btn">Upload</span></div>
+  <div class="card"><strong>Uploading</strong><div class="progress" role="progressbar" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" aria-label="Upload progress"><span style="width:62%"></span></div><p role="status">Uploading lesson.mp4: 62%</p><span class="btn sec">Cancel upload</span><p class="note">If the connection drops, the upload resumes when you reselect the same file.</p></div>
+  <div class="card"><strong>Checking</strong><p role="status">Upload finished. Checking the file...</p><div class="skel"></div></div>
+</div>
+<div class="three" style="margin-top:12px">
+  <div class="card"><strong>Ready</strong><span class="tag free">Ready</span><p>lesson.mp4, 182 MB. Duration shown only when known.</p><span class="btn sec">Replace video</span> <span class="btn sec">Watch as learner</span></div>
+  <div class="card"><strong>Errored</strong><div class="banner err" role="alert">This file could not be used: wrong type or size. Use MP4 (H.264 and AAC) under the limit.</div><span class="btn">Upload again</span></div>
+  <div class="card"><strong>Blocks submit</strong><div class="banner warn">A video lesson without a ready video blocks Submit for review. See T7.</div></div>
+</div>
+
+<h2 class="s" id="t6">T6 Quiz builder (R29, R30, R31)</h2>
+<div class="frame"><div class="url">/teach/courses/[courseId]/items/[quizId]</div><div class="body">
+  <div class="three">
+    <div class="fld"><label for="ps">Passing score (%)</label><input id="ps" value="70"></div>
+    <div class="fld"><label for="ma">Attempt limit</label><select id="ma"><option>3 attempts</option><option>Unlimited</option></select></div>
+    <div class="fld"><label for="sc">After submit</label><select id="sc"><option>Show which answers were wrong only</option><option>Also show correct answers</option></select></div>
+  </div>
+  <div class="q"><div class="row"><strong style="flex:1">Question 1</strong><span class="tag">Single choice</span><span class="btn sec">Up</span><span class="btn sec">Down</span><span class="btn danger">Delete</span></div>
+    <div class="fld"><label for="p1">Prompt</label><input id="p1" value="Which line minimises squared error?"></div>
+    <fieldset style="border:0;padding:0"><legend class="note">Options. Choose the correct one.</legend>
+      <div class="opt"><input type="radio" name="k" checked aria-label="Option 1 is correct"><input style="flex:1;min-height:44px" value="The least squares line" aria-label="Option 1 text"></div>
+      <div class="opt"><input type="radio" name="k" aria-label="Option 2 is correct"><input style="flex:1;min-height:44px" value="The median line" aria-label="Option 2 text"></div>
+    </fieldset>
+    <div class="fld"><label for="ex">Explanation (optional)</label><input id="ex"><div class="help">Shown after submit together with the result.</div></div>
+  </div>
+  <p><span class="btn sec">Add question</span> <span class="btn">Save quiz</span></p>
+</div></div>
+<div class="three">
+  <div class="card"><strong>Validation errors</strong><div class="banner err" role="alert"><ul style="margin:0"><li>Question 2 has no correct option.</li><li>Passing score must be 1 to 100.</li></ul></div></div>
+  <div class="card"><strong>Question types</strong><p>Single choice, multiple choice (several correct, all or nothing), true or false (two fixed options).</p></div>
+  <div class="card"><strong>Keys are private</strong><div class="banner info">Correct answers are visible only to you and admins. Learners never receive them before they submit.</div></div>
+</div>
+
+<h2 class="s" id="t7">T7 Publish checklist and review status (R14, R24)</h2>
+<div class="three">
+  <div class="frame"><div class="url">Submit for review</div><div class="body">
+    <h3 style="margin-top:0">Ready to submit?</h3>
+    <ul class="check" style="list-style:none;padding:0"><li>&#10003; Title, description, category and cover set</li><li>&#10003; At least one section and one lesson</li><li>&#10007; 1 video lesson has no ready video <u>Fix</u></li><li>&#10007; Paid course: payouts not set up <u>Set up payouts</u></li></ul>
+    <span class="btn" aria-disabled="true">Submit for review</span>
+    <p class="note">Disabled buttons keep their text and are explained by the list. The server still enforces every rule.</p>
+  </div></div>
+  <div class="frame"><div class="url">In review</div><div class="body"><span class="tag review">In review</span><h3>Submitted 2026-10-14</h3><p>An admin will review it. You will see the decision here. (Email is open question Q7.)</p></div></div>
+  <div class="frame"><div class="url">Rejected</div><div class="body"><span class="tag rev">Rejected</span><h3>Changes needed</h3><div class="banner err"><strong>Admin reason:</strong> Lesson 3 video has no audio. (Fake.)</div><span class="btn">Edit and resubmit</span><p class="note">Editing moves it back to Draft.</p></div></div>
+</div>
+<div class="three" style="margin-top:12px">
+  <div class="card"><strong>Published</strong><span class="tag free">Published</span><p><span class="btn sec">Unpublish</span></p><p class="note">Unpublishing hides it from the catalog. Enrolled learners keep access (R16). To list it again you resubmit.</p></div>
+  <div class="card"><strong>Unpublished</strong><span class="tag">Unpublished</span><p><span class="btn">Resubmit for review</span></p></div>
+  <div class="card"><strong>Submit refused by server</strong><div class="banner err" role="alert">Paid courses need payouts enabled. Finish payout setup, then submit again.</div></div>
+</div>
+
+<h2 class="s" id="t8">T8 Earnings, stats and payouts (R23, R24, R38)</h2>
+<div class="frame"><div class="url">/teach/earnings</div><div class="body">
+  <div class="three">
+    <div class="stat"><span class="note">Enrollments (all time)</span><b>18</b></div>
+    <div class="stat"><span class="note">Revenue</span><b>$882.00</b></div>
+    <div class="stat"><span class="note">Your share</span><b>$705.60</b><span class="note">After the platform fee at the time of each sale</span></div>
+  </div>
+  <table style="margin-top:12px"><caption>By course</caption><thead><tr><th scope="col">Course</th><th scope="col">Enrolled</th><th scope="col">Completion rate</th><th scope="col">Quiz pass rate</th><th scope="col">Revenue</th><th scope="col">Your share</th></tr></thead><tbody>
+  <tr><td>Applied Regression</td><td>18</td><td>22%</td><td>71%</td><td>$882.00</td><td>$705.60</td></tr></tbody></table>
+  <p class="note">Learners are shown as counts only. Names and emails are never shown to instructors.</p>
+  <div class="banner ok" style="margin-top:12px"><strong>Payouts are on.</strong> Payouts are sent by Stripe to the bank account you connected. <u>Open payout settings</u></div>
+</div></div>
+<div class="three">
+  <div class="card"><strong>Payouts not set up</strong><span class="btn">Set up payouts on Stripe</span><p class="note">You leave this site for Stripe's secure form and return here.</p></div>
+  <div class="card"><strong>Incomplete / returned early</strong><div class="banner warn">Stripe needs more details before payouts can start. <u>Continue setup</u></div></div>
+  <div class="card"><strong>Empty and loading</strong><p>No sales yet. Revenue appears after your first paid enrollment.</p><div class="skel"></div></div>
+</div>
+<p class="note">Payout amounts and dates are shown by Stripe's own dashboard link; the app shows only sale amounts and shares it has stored. (Open question DQ5.)</p>
+
+<h2 class="s" id="t9">T9 Phone width</h2>
+<p class="cap">Authoring is usable on a phone but desktop is the primary target (assumption). The editor becomes a stack: outline list, then a detail screen with a back link.</p>
+<div class="phones">
+  <div class="phone"><nav class="top"><span class="logo">Teach</span><span class="sp"></span><span class="btn sec">Menu</span></nav><div class="in">
+    <h4>Time Series Basics</h4><ul class="tree"><li class="sec">Section 1</li><li>Video &middot; What is a series?</li><li>Text &middot; Terminology</li></ul><span class="btn" style="width:100%;text-align:center">Add lesson</span></div></div>
+  <div class="phone"><nav class="top"><a href="#t3">&larr; Outline</a></nav><div class="in"><div class="fld"><label for="pt">Title</label><input id="pt" value="What is a series?"></div><div class="progress" role="progressbar" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" aria-label="Upload progress"><span style="width:62%"></span></div><p>Uploading 62%</p></div></div>
+</div>
+
+<h2 class="s">What this mockup does not show</h2>
+<ul>
+<li>Visual identity (placeholder), real interaction, keyboard or screen reader behaviour, measured contrast. Not rendered by its author.</li>
+<li>Stripe's hosted onboarding pages and dashboards.</li>
+<li>Cover image upload and crop, and the category picker.</li>
+<li>Drag reorder (not designed; Up and Down buttons are the specified method).</li>
+</ul>
+</main>
+</body>
+</html>

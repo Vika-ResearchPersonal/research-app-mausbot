@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MOCKUP: LMS admin surface</title>
+<!--
+  MOCKUP, not the product. Fake content only.
+  Design page: /design/lms-admin
+  Requirements shown: R2 R3 R4 R14 R16 R22 R37 R39 R44 R20 R43 R40 R45
+  Screens: M1 overview and queue, M2 instructor application, M3 course review, M4 users and roles,
+           M5 payments and refund, M6 certificate revoke, M7 audit log, M8 categories and phone.
+  Static: no JavaScript, no external requests. Cannot be rendered by the author; unverified visually.
+-->
+<style>
+  :root{--ink:#17202a;--mute:#52606d;--line:#cfd6dd;--bg:#f5f7f9;--card:#fff;--brand:#0b6e57;--brand-ink:#fff;--warn:#8a5a00;--warnbg:#fff4d6;--err:#a31621;--errbg:#fde8ea;--ok:#0b6e57;--okbg:#e3f4ee;--focus:#1a56db}
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg)}
+  .mockbar{background:#17202a;color:#fff;padding:8px 16px;font-size:14px;position:sticky;top:0;z-index:2}
+  .mockbar a{color:#9fe3cf;margin-right:12px}
+  main{max-width:1040px;margin:0 auto;padding:16px}
+  h1{font-size:24px;margin:8px 0}
+  h2.s{font-size:18px;margin:32px 0 4px;border-bottom:2px solid var(--ink);padding-bottom:4px}
+  p.cap{color:var(--mute);margin:0 0 12px;font-size:14px}
+  .frame{background:var(--card);border:1px solid var(--line);border-radius:8px;margin:12px 0;overflow:hidden}
+  .frame>.url{background:#eef1f4;border-bottom:1px solid var(--line);padding:6px 12px;font:13px ui-monospace,Menlo,monospace;color:var(--mute)}
+  .frame>.body{padding:16px}
+  nav.top{display:flex;gap:16px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);background:#fff}
+  nav.top .logo{font-weight:700;color:var(--brand)}
+  nav.top a{color:var(--ink)}
+  nav.top .sp{flex:1}
+  .btn{display:inline-block;min-height:44px;padding:10px 16px;border-radius:6px;border:1px solid var(--brand);background:var(--brand);color:var(--brand-ink);font-weight:600;font-size:16px}
+  .btn.sec{background:#fff;color:var(--brand)}
+  .btn.danger{background:var(--err);border-color:var(--err)}
+  .btn[aria-disabled=true]{background:#d9dee3;border-color:#d9dee3;color:#3d4852}
+  .tag{display:inline-block;padding:2px 8px;border-radius:12px;font-size:13px;border:1px solid var(--line);background:#fff}
+  .tag.free{background:var(--okbg);border-color:var(--ok);color:var(--ok)}
+  .tag.rev{background:var(--errbg);border-color:var(--err);color:var(--err)}
+  .tag.pre{background:#e8efff;border-color:var(--focus);color:#123a99}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .card{border:1px solid var(--line);border-radius:8px;padding:12px;background:#fff}
+  .cover{height:90px;background:repeating-linear-gradient(45deg,#dfe7ee,#dfe7ee 10px,#edf2f6 10px,#edf2f6 20px);border-radius:6px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:13px}
+  .skel{background:#e6eaee;border-radius:4px;height:14px;margin:8px 0}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .filters{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+  .filters label{display:block;font-size:14px;color:var(--mute)}
+  .filters input,.filters select{min-height:44px;border:1px solid #6b7785;border-radius:6px;padding:6px 10px;font-size:16px;background:#fff}
+  .banner{border-left:4px solid;padding:10px 12px;margin:8px 0;border-radius:4px}
+  .banner.info{background:#e8efff;border-color:var(--focus)}
+  .banner.warn{background:var(--warnbg);border-color:var(--warn)}
+  .banner.err{background:var(--errbg);border-color:var(--err)}
+  .banner.ok{background:var(--okbg);border-color:var(--ok)}
+  .two{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+  .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .outline{list-style:none;margin:0;padding:0}
+  .outline li{display:flex;gap:8px;align-items:center;padding:8px 4px;border-bottom:1px solid #e5e9ed;min-height:44px}
+  .outline li.cur{background:#e3f4ee;font-weight:600}
+  .progress{height:10px;background:#e3e8ec;border-radius:5px;overflow:hidden}
+  .progress>span{display:block;height:100%;background:var(--brand)}
+  .player{background:#0e1a24;color:#fff;border-radius:8px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px}
+  .q{border:1px solid var(--line);border-radius:8px;padding:12px;margin:12px 0}
+  .q fieldset{border:0;padding:0;margin:0}
+  .q legend{font-weight:600;padding:0 0 6px}
+  .opt{display:flex;gap:10px;align-items:center;min-height:44px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;margin:6px 0}
+  .opt.wrong{border-color:var(--err);background:var(--errbg)}
+  .opt.right{border-color:var(--ok);background:var(--okbg)}
+  .cert{border:6px double var(--brand);padding:32px;text-align:center;background:#fff}
+  .cert .name{font-size:28px;font-weight:700;margin:8px 0}
+  .phone{width:360px;max-width:100%;border:10px solid #17202a;border-radius:24px;overflow:hidden;background:#fff}
+  .phones{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+  .phone .in{padding:12px}
+  .phone .grid{grid-template-columns:1fr}
+  .phone nav.top{flex-wrap:wrap}
+  table{border-collapse:collapse;width:100%}
+  th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+  caption{text-align:left;font-weight:600;padding:4px 0}
+  .focus{outline:3px solid var(--focus);outline-offset:2px}
+  .note{font-size:13px;color:var(--mute)}
+  @media (max-width:760px){.grid,.three,.two{grid-template-columns:1fr}}
+</style><style>
+  .editor{display:grid;grid-template-columns:300px 1fr;gap:16px}
+  .tree{list-style:none;margin:0;padding:0}
+  .tree li{border:1px solid var(--line);border-radius:6px;padding:6px 8px;margin:6px 0;background:#fff;display:flex;gap:8px;align-items:center;min-height:44px}
+  .tree li.sec{background:#eef1f4;font-weight:600}
+  .tree li.cur{border-color:var(--brand);box-shadow:inset 3px 0 0 var(--brand)}
+  .tree .mv{margin-left:auto;display:flex;gap:4px}
+  .tree .mv span{border:1px solid var(--line);border-radius:4px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;background:#fff;font-size:13px}
+  .fld{margin:10px 0}.fld label{display:block;font-weight:600;font-size:14px}
+  .fld input,.fld textarea,.fld select{width:100%;min-height:44px;border:1px solid #6b7785;border-radius:6px;padding:8px 10px;font:inherit}
+  .fld .help{font-size:13px;color:var(--mute)}
+  .fld .errm{font-size:13px;color:var(--err)}
+  .toolbar{display:flex;gap:4px;border:1px solid #6b7785;border-bottom:0;border-radius:6px 6px 0 0;padding:4px;background:#eef1f4}
+  .toolbar span{min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:#fff;border-radius:4px}
+  .stat{border:1px solid var(--line);border-radius:8px;padding:12px;background:#fff}
+  .stat b{display:block;font-size:24px}
+  .tag.draft{background:#eef1f4}.tag.review{background:var(--warnbg);border-color:var(--warn);color:var(--warn)}
+  .check li{margin:6px 0}
+</style><style>
+  .tabs{display:flex;gap:4px;border-bottom:2px solid var(--line);margin-bottom:12px;flex-wrap:wrap}
+  .tabs span{padding:10px 14px;min-height:44px;border:1px solid var(--line);border-bottom:0;border-radius:6px 6px 0 0;background:#eef1f4}
+  .tabs span.on{background:#fff;font-weight:700;border-color:var(--ink)}
+  .dlg{border:2px solid var(--ink);border-radius:8px;padding:16px;background:#fff;max-width:480px}
+  .scroll{overflow-x:auto}
+  code.id{font:13px ui-monospace,Menlo,monospace}
+</style>
+</head>
+<body>
+<div class="mockbar" role="note"><strong>MOCKUP</strong> &middot; not the product &middot; fake data &middot;
+  <a href="#m1">M1 Overview</a><a href="#m2">M2 Applications</a><a href="#m3">M3 Course review</a><a href="#m4">M4 Users</a><a href="#m5">M5 Payments and refunds</a><a href="#m6">M6 Certificates</a><a href="#m7">M7 Audit</a><a href="#m8">M8 Categories, phone</a></div>
+<main>
+<h1>LMS admin surface (mockup)</h1>
+<p class="cap">Routes under <code>/admin/lms</code>. Every destructive action opens a confirmation dialog that names the target and asks for a reason, and writes an audit row (R44). Access is for admins only; everyone else gets the access denied state.</p>
+
+<h2 class="s" id="m1">M1 Overview and review queue (R3, R14, R39)</h2>
+<div class="frame"><div class="url">/admin/lms</div>
+<nav class="top" aria-label="Admin"><span class="logo">LearnHub &middot; Admin</span><a href="#m1">Queue</a><a href="#m4">Users</a><a href="#m5">Payments</a><a href="#m6">Certificates</a><a href="#m7">Audit log</a><a href="#m8">Categories</a></nav>
+<div class="body">
+  <div class="three">
+    <div class="stat"><span class="note">Applications waiting</span><b>2</b></div>
+    <div class="stat"><span class="note">Courses in review</span><b>3</b></div>
+    <div class="stat"><span class="note">Needs attention</span><b>1</b><span class="note">webhook event failed</span></div>
+  </div>
+  <div class="tabs" role="tablist" style="margin-top:12px"><span class="on" role="tab" aria-selected="true">Courses in review (3)</span><span role="tab">Instructor applications (2)</span></div>
+  <div class="scroll"><table><caption>Oldest first</caption><thead><tr><th scope="col">Course</th><th scope="col">Instructor</th><th scope="col">Submitted</th><th scope="col">Price</th><th scope="col">Payout ready</th><th scope="col"><span class="note">Action</span></th></tr></thead><tbody>
+  <tr><td><a href="#m3">Survey Design</a></td><td>Sample Instructor C</td><td>2026-10-12</td><td>Free</td><td>n/a</td><td><span class="btn sec">Review</span></td></tr>
+  <tr><td><a href="#m3">Time Series Basics</a></td><td>Sample Instructor B</td><td>2026-10-14</td><td>$39.00</td><td>Yes</td><td><span class="btn sec">Review</span></td></tr></tbody></table></div>
+  <div class="banner warn" style="margin-top:12px"><strong>Needs attention:</strong> 1 payment event failed to process (2026-10-15 07:10). <u>View events</u></div>
+</div></div>
+<div class="three">
+  <div class="card"><strong>Queue empty</strong><p>Nothing is waiting for review.</p></div>
+  <div class="card"><strong>Loading</strong><div class="skel"></div><div class="skel"></div></div>
+  <div class="card"><strong>Access denied</strong><h4>Admins only</h4><p>You do not have access to this area.</p></div>
+</div>
+
+<h2 class="s" id="m2">M2 Instructor application decision (R3, R44)</h2>
+<div class="three">
+  <div class="frame"><div class="url">/admin/lms/applications/[id]</div><div class="body"><h3 style="margin-top:0">Sample Applicant</h3><p class="note">Applied 2026-10-14 &middot; account created 2026-10-01</p><blockquote style="margin:0;border-left:3px solid var(--line);padding-left:10px">I teach introductory statistics. (Fake statement.)</blockquote><p><span class="btn">Approve</span> <span class="btn danger">Reject</span></p></div></div>
+  <div class="dlg"><strong>Reject application</strong><div class="fld"><label for="r1">Reason (shown to the applicant)</label><textarea id="r1" rows="3"></textarea><div class="errm">A reason is required.</div></div><span class="btn danger">Reject</span> <span class="btn sec">Cancel</span></div>
+  <div class="card"><strong>Already decided</strong><div class="banner info">This application was approved by Admin A on 2026-10-14. No further action.</div><p class="note">Two admins deciding at once: the second gets this state, not an error page.</p></div>
+</div>
+
+<h2 class="s" id="m3">M3 Course review (R14, R24, R44)</h2>
+<div class="frame"><div class="url">/admin/lms/courses/[courseId]</div><div class="body">
+  <div class="row"><h3 style="margin:0;flex:1">Time Series Basics <span class="tag review">In review</span></h3><span class="btn">Publish</span><span class="btn danger">Reject</span></div>
+  <div class="two" style="margin-top:12px">
+    <div><h4 style="margin-top:0">Content</h4><ol class="outline"><li>Section 1: Basics</li><li>Video &middot; What is a series? <span class="tag free">Ready</span> <u>Watch</u></li><li>Text &middot; Terminology <u>Read</u></li><li>Quiz &middot; Warm-up (4 questions) <u>View with keys</u></li></ol></div>
+    <aside class="card"><h4 style="margin-top:0">Checks</h4><ul style="list-style:none;padding:0"><li>&#10003; Price in bounds</li><li>&#10003; Instructor payouts enabled</li><li>&#10003; All videos ready</li></ul><div class="note">Instructor: Sample Instructor B. Prior courses: 1 published.</div></aside>
+  </div>
+</div></div>
+<div class="three">
+  <div class="dlg"><strong>Reject course</strong><div class="fld"><label for="r2">Reason (sent to the instructor)</label><textarea id="r2" rows="3"></textarea></div><span class="btn danger">Reject course</span> <span class="btn sec">Cancel</span></div>
+  <div class="card"><strong>Publish refused by server</strong><div class="banner err" role="alert">Cannot publish: the instructor's payouts are not enabled.</div></div>
+  <div class="card"><strong>Unpublish published course</strong><div class="dlg" style="border-width:1px">Unpublish &ldquo;Applied Regression&rdquo;? It leaves the catalog. 18 enrolled learners keep access. Reason required.</div></div>
+</div>
+
+<h2 class="s" id="m4">M4 Users and roles (R2, R4, R39, R44)</h2>
+<div class="frame"><div class="url">/admin/lms/users</div><div class="body">
+  <div class="filters"><div><label for="uq">Search by email or name</label><input id="uq"></div><div><label for="ur">Role</label><select id="ur"><option>Any</option><option>Instructor</option><option>Admin</option></select></div></div>
+  <div class="scroll"><table><caption>Users</caption><thead><tr><th scope="col">Name</th><th scope="col">Email</th><th scope="col">Roles</th><th scope="col">State</th><th scope="col"><span class="note">Action</span></th></tr></thead><tbody>
+  <tr><td>Sample Learner</td><td>learner@example.invalid</td><td>Learner</td><td><span class="tag free">Active</span></td><td><span class="btn sec">Suspend</span></td></tr>
+  <tr><td>Sample Instructor B</td><td>instructor-b@example.invalid</td><td>Learner, Instructor</td><td><span class="tag free">Active</span></td><td><span class="btn sec">Suspend</span></td></tr>
+  <tr><td>Sample Troll</td><td>troll@example.invalid</td><td>Learner</td><td><span class="tag rev">Suspended</span></td><td><span class="btn sec">Reinstate</span></td></tr></tbody></table></div>
+  <p class="note">Roles are read-only here. Instructor is granted by approving an application; admin is set by the owner outside the UI (TSD section 5.1). Whether admins can remove the instructor role is open question DQ4.</p>
+</div></div>
+<div class="three">
+  <div class="dlg"><strong>Suspend Sample Troll</strong><p>They will be signed out on their next request. Their courses are hidden from the catalog. Enrolled learners lose access to those courses unless the owner decides otherwise.</p><div class="fld"><label for="r3">Reason (audit only)</label><textarea id="r3" rows="2"></textarea></div><span class="btn danger">Suspend</span> <span class="btn sec">Cancel</span></div>
+  <div class="card"><strong>Empty search</strong><p>No users match.</p></div>
+  <div class="card"><strong>Error</strong><div class="banner err" role="alert">Could not load users. <u>Retry</u></div></div>
+</div>
+
+<h2 class="s" id="m5">M5 Payments and refunds (R21, R22, R23, R39, R44)</h2>
+<div class="frame"><div class="url">/admin/lms/payments</div><div class="body">
+  <div class="three"><div class="stat"><span class="note">Gross (30 days)</span><b>$1,420.00</b></div><div class="stat"><span class="note">Platform fees</span><b>$284.00</b></div><div class="stat"><span class="note">Refunds</span><b>$29.00</b></div></div>
+  <div class="scroll"><table style="margin-top:12px"><caption>Payments</caption><thead><tr><th scope="col">Date</th><th scope="col">Learner</th><th scope="col">Course</th><th scope="col">Amount</th><th scope="col">Fee</th><th scope="col">Instructor share</th><th scope="col">Status</th><th scope="col"><span class="note">Action</span></th></tr></thead><tbody>
+  <tr><td>2026-10-01</td><td>Sample Learner</td><td>Applied Regression</td><td>$49.00</td><td>$9.80</td><td>$39.20</td><td><span class="tag free">Succeeded</span></td><td><span class="btn sec">Refund</span></td></tr>
+  <tr><td>2026-09-12</td><td>Sample Other</td><td>Data Cleaning</td><td>$29.00</td><td>$5.80</td><td>$23.20</td><td><span class="tag rev">Refunded</span></td><td>n/a</td></tr>
+  <tr><td>2026-10-15</td><td>Sample Third</td><td>Applied Regression</td><td>$49.00</td><td>$9.80</td><td>$39.20</td><td><span class="tag review">Pending</span></td><td>n/a</td></tr></tbody></table></div>
+</div></div>
+<div class="three">
+  <div class="dlg"><strong>Refund $49.00</strong><p>Sample Learner, Applied Regression. Paid 2026-10-01, inside the 14 day window.</p><div class="fld"><label for="r4">Reason</label><textarea id="r4" rows="2"></textarea></div><div class="banner warn">The learner loses access and the certificate is revoked only after Stripe confirms the refund.</div><span class="btn danger">Request refund</span> <span class="btn sec">Cancel</span></div>
+  <div class="card"><strong>Refund pending</strong><span class="tag review">Refund requested</span><p role="status">Waiting for Stripe to confirm. Access has not changed yet.</p></div>
+  <div class="card"><strong>Outside window</strong><div class="banner info">This payment is 40 days old, outside the 14 day window. You may still refund. The dialog repeats this in its first line.</div></div>
+</div>
+<p class="note">Learner-initiated refund requests (US-L10) have no endpoint in the TSD; see open question DQ2. Partial refunds: the TSD interface takes an amount, so the dialog has an amount field defaulting to full (assumption).</p>
+
+<h2 class="s" id="m6">M6 Certificates (R37, R44)</h2>
+<div class="three">
+  <div class="frame"><div class="url">/admin/lms/certificates</div><div class="body"><div class="fld"><label for="cs">Find by certificate ID or learner email</label><input id="cs" value="DEMO-0000-FAKE"></div><table><thead><tr><th scope="col">ID</th><th scope="col">Learner</th><th scope="col">Course</th><th scope="col">State</th></tr></thead><tbody><tr><td><code class="id">DEMO-0000-FAKE</code></td><td>Sample Learner</td><td>Intro to Statistics</td><td><span class="tag free">Valid</span></td></tr></tbody></table><p><span class="btn danger">Revoke</span></p></div></div>
+  <div class="dlg"><strong>Revoke certificate</strong><p>The public verification page will show it as revoked. This cannot be undone in this version.</p><div class="fld"><label for="r5">Reason</label><textarea id="r5" rows="2"></textarea></div><span class="btn danger">Revoke</span> <span class="btn sec">Cancel</span></div>
+  <div class="card"><strong>Already revoked</strong><span class="tag rev">Revoked 2026-10-20</span><p>Reason: Refund. (Fake.)</p></div>
+</div>
+
+<h2 class="s" id="m7">M7 Audit log (R44)</h2>
+<div class="frame"><div class="url">/admin/lms/audit</div><div class="body">
+  <div class="filters"><div><label for="af">Action</label><select id="af"><option>All</option><option>course.publish</option><option>payment.refund</option><option>user.suspend</option></select></div><div><label for="ad">Date from</label><input id="ad" type="date"></div></div>
+  <div class="scroll"><table><caption>Newest first. Read-only.</caption><thead><tr><th scope="col">When (UTC)</th><th scope="col">Actor</th><th scope="col">Action</th><th scope="col">Target</th><th scope="col">Detail</th></tr></thead><tbody>
+  <tr><td>2026-10-15 07:41</td><td>Admin A</td><td>course.publish</td><td>Applied Regression</td><td>none</td></tr>
+  <tr><td>2026-10-15 07:10</td><td>system</td><td>webhook.error</td><td>evt_FAKE1</td><td>amount mismatch</td></tr>
+  <tr><td>2026-10-14 16:02</td><td>Admin A</td><td>application.approve</td><td>Sample Instructor B</td><td>none</td></tr></tbody></table></div>
+  <p class="note">Page size 50, older entries by Next page. No edit or delete controls exist.</p>
+</div></div>
+
+<h2 class="s" id="m8">M8 Categories and phone width</h2>
+<div class="three">
+  <div class="frame"><div class="url">/admin/lms/categories</div><div class="body"><ul class="tree"><li>Data <span class="mv"><span>Edit</span></span></li><li>Design <span class="mv"><span>Edit</span></span></li></ul><div class="fld"><label for="nc">New category name</label><input id="nc"></div><span class="btn">Add category</span></div></div>
+  <div class="phone"><nav class="top"><span class="logo">Admin</span><span class="sp"></span><span class="btn sec">Menu</span></nav><div class="in"><h4>Courses in review (3)</h4><ul class="tree"><li>Survey Design<span class="mv"><span>Open</span></span></li><li>Time Series Basics<span class="mv"><span>Open</span></span></li></ul><p class="note">Tables become stacked cards with the same fields; the row action is a full-width button.</p></div></div>
+</div>
+
+<h2 class="s">What this mockup does not show</h2>
+<ul>
+<li>Real visual identity, interaction, keyboard order, or measured contrast. Not rendered by its author.</li>
+<li>Payout run history from Stripe, CSV export, bulk actions, and configuration editing of fee percentage, price bounds and refund window (no interface in the TSD; DQ1).</li>
+<li>Webhook event detail screen beyond the attention banner.</li>
+</ul>
+</main>
+</body>
+</html>

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MOCKUP: LMS learner surface</title>
+<!--
+  MOCKUP, not the product. Fake content only.
+  Design page: /design/lms-learner
+  Requirements shown: R6 R7 R8 R13 R16 R17 R18 R19 R21 R26 R27 R28 R29 R30 R31 R32 R33 R35 R36 R37 R40 R45
+  Screens: S1 catalog, S2 course page, S3 checkout return, S4 lesson player, S5 quiz, S6 my learning,
+           S7 certificate, S8 public verification, S9 phone width.
+  Static: no JavaScript, no external requests. Cannot be rendered by the author; unverified visually.
+-->
+<style>
+  :root{--ink:#17202a;--mute:#52606d;--line:#cfd6dd;--bg:#f5f7f9;--card:#fff;--brand:#0b6e57;--brand-ink:#fff;--warn:#8a5a00;--warnbg:#fff4d6;--err:#a31621;--errbg:#fde8ea;--ok:#0b6e57;--okbg:#e3f4ee;--focus:#1a56db}
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg)}
+  .mockbar{background:#17202a;color:#fff;padding:8px 16px;font-size:14px;position:sticky;top:0;z-index:2}
+  .mockbar a{color:#9fe3cf;margin-right:12px}
+  main{max-width:1040px;margin:0 auto;padding:16px}
+  h1{font-size:24px;margin:8px 0}
+  h2.s{font-size:18px;margin:32px 0 4px;border-bottom:2px solid var(--ink);padding-bottom:4px}
+  p.cap{color:var(--mute);margin:0 0 12px;font-size:14px}
+  .frame{background:var(--card);border:1px solid var(--line);border-radius:8px;margin:12px 0;overflow:hidden}
+  .frame>.url{background:#eef1f4;border-bottom:1px solid var(--line);padding:6px 12px;font:13px ui-monospace,Menlo,monospace;color:var(--mute)}
+  .frame>.body{padding:16px}
+  nav.top{display:flex;gap:16px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);background:#fff}
+  nav.top .logo{font-weight:700;color:var(--brand)}
+  nav.top a{color:var(--ink)}
+  nav.top .sp{flex:1}
+  .btn{display:inline-block;min-height:44px;padding:10px 16px;border-radius:6px;border:1px solid var(--brand);background:var(--brand);color:var(--brand-ink);font-weight:600;font-size:16px}
+  .btn.sec{background:#fff;color:var(--brand)}
+  .btn.danger{background:var(--err);border-color:var(--err)}
+  .btn[aria-disabled=true]{background:#d9dee3;border-color:#d9dee3;color:#3d4852}
+  .tag{display:inline-block;padding:2px 8px;border-radius:12px;font-size:13px;border:1px solid var(--line);background:#fff}
+  .tag.free{background:var(--okbg);border-color:var(--ok);color:var(--ok)}
+  .tag.rev{background:var(--errbg);border-color:var(--err);color:var(--err)}
+  .tag.pre{background:#e8efff;border-color:var(--focus);color:#123a99}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .card{border:1px solid var(--line);border-radius:8px;padding:12px;background:#fff}
+  .cover{height:90px;background:repeating-linear-gradient(45deg,#dfe7ee,#dfe7ee 10px,#edf2f6 10px,#edf2f6 20px);border-radius:6px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:13px}
+  .skel{background:#e6eaee;border-radius:4px;height:14px;margin:8px 0}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .filters{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+  .filters label{display:block;font-size:14px;color:var(--mute)}
+  .filters input,.filters select{min-height:44px;border:1px solid #6b7785;border-radius:6px;padding:6px 10px;font-size:16px;background:#fff}
+  .banner{border-left:4px solid;padding:10px 12px;margin:8px 0;border-radius:4px}
+  .banner.info{background:#e8efff;border-color:var(--focus)}
+  .banner.warn{background:var(--warnbg);border-color:var(--warn)}
+  .banner.err{background:var(--errbg);border-color:var(--err)}
+  .banner.ok{background:var(--okbg);border-color:var(--ok)}
+  .two{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+  .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .outline{list-style:none;margin:0;padding:0}
+  .outline li{display:flex;gap:8px;align-items:center;padding:8px 4px;border-bottom:1px solid #e5e9ed;min-height:44px}
+  .outline li.cur{background:#e3f4ee;font-weight:600}
+  .progress{height:10px;background:#e3e8ec;border-radius:5px;overflow:hidden}
+  .progress>span{display:block;height:100%;background:var(--brand)}
+  .player{background:#0e1a24;color:#fff;border-radius:8px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px}
+  .q{border:1px solid var(--line);border-radius:8px;padding:12px;margin:12px 0}
+  .q fieldset{border:0;padding:0;margin:0}
+  .q legend{font-weight:600;padding:0 0 6px}
+  .opt{display:flex;gap:10px;align-items:center;min-height:44px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;margin:6px 0}
+  .opt.wrong{border-color:var(--err);background:var(--errbg)}
+  .opt.right{border-color:var(--ok);background:var(--okbg)}
+  .cert{border:6px double var(--brand);padding:32px;text-align:center;background:#fff}
+  .cert .name{font-size:28px;font-weight:700;margin:8px 0}
+  .phone{width:360px;max-width:100%;border:10px solid #17202a;border-radius:24px;overflow:hidden;background:#fff}
+  .phones{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+  .phone .in{padding:12px}
+  .phone .grid{grid-template-columns:1fr}
+  .phone nav.top{flex-wrap:wrap}
+  table{border-collapse:collapse;width:100%}
+  th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+  caption{text-align:left;font-weight:600;padding:4px 0}
+  .focus{outline:3px solid var(--focus);outline-offset:2px}
+  .note{font-size:13px;color:var(--mute)}
+  @media (max-width:760px){.grid,.three,.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="mockbar" role="note"><strong>MOCKUP</strong> &middot; not the product &middot; fake data &middot;
+  <a href="#s1">S1 Catalog</a><a href="#s2">S2 Course</a><a href="#s3">S3 Checkout return</a><a href="#s4">S4 Lesson</a><a href="#s5">S5 Quiz</a><a href="#s6">S6 My learning</a><a href="#s7">S7 Certificate</a><a href="#s8">S8 Verify</a><a href="#s9">S9 Phone</a></div>
+<main>
+<h1>LMS learner surface (mockup)</h1>
+<p class="cap">Shows each learner screen with its states side by side. The Focus ring shown on controls is the required focus style (3px, 2px offset). Course names, people and ids are invented.</p>
+
+<!-- S1 -->
+<h2 class="s" id="s1">S1 Catalog (R6, R8, R40)</h2>
+<p class="cap">Route <code>/learn</code>. Public. Ready state, then loading, empty and error.</p>
+<div class="frame"><div class="url">/learn?q=statistics&amp;category=data&amp;price=any</div>
+<nav class="top" aria-label="Main"><span class="logo">LearnHub (placeholder name)</span><a href="#s1">Catalog</a><a href="#s6">My learning</a><span class="sp"></span><a href="#s1">Sign in</a><a class="btn" href="#s1">Sign up</a></nav>
+<div class="body">
+  <h3 style="margin-top:0">Courses</h3>
+  <form class="filters" role="search" aria-label="Filter courses">
+    <div><label for="q">Search by title</label><input id="q" value="statistics" class="focus"></div>
+    <div><label for="cat">Category</label><select id="cat"><option>All categories</option><option selected>Data</option></select></div>
+    <div><label for="pr">Price</label><select id="pr"><option selected>Free and paid</option><option>Free</option><option>Paid</option></select></div>
+    <div style="align-self:end"><span class="btn">Apply</span></div>
+  </form>
+  <p role="status" class="note">3 courses found</p>
+  <ul class="grid" style="list-style:none;padding:0;margin:0">
+    <li class="card"><div class="cover">cover image</div><h4 style="margin:0"><a href="#s2">Intro to Statistics</a></h4><div class="note">Sample Instructor A &middot; Data</div><p class="row"><span class="tag free">Free</span><span class="note">12 lessons</span></p></li>
+    <li class="card"><div class="cover">cover image</div><h4 style="margin:0"><a href="#s2">Applied Regression</a></h4><div class="note">Sample Instructor B &middot; Data</div><p class="row"><strong>$49.00</strong><span class="note">24 lessons</span></p></li>
+    <li class="card"><div class="cover">cover image</div><h4 style="margin:0"><a href="#s2">Data Cleaning in Practice</a></h4><div class="note">Sample Instructor A &middot; Data</div><p class="row"><strong>$29.00</strong><span class="note">9 lessons</span></p></li>
+  </ul>
+</div></div>
+<div class="three">
+  <div class="card"><strong>Loading</strong><div class="skel" style="height:90px"></div><div class="skel" style="width:70%"></div><div class="skel" style="width:40%"></div><p class="note" role="status">Loading courses...</p></div>
+  <div class="card"><strong>Empty (no match)</strong><p>No courses match &ldquo;statistics&rdquo;.</p><p><span class="btn sec">Clear filters</span></p></div>
+  <div class="card"><strong>Error</strong><div class="banner err" role="alert">We could not load courses. Check your connection and try again.</div><span class="btn sec">Retry</span></div>
+</div>
+<p class="note">Empty catalog with no filters set reads &ldquo;No courses are published yet.&rdquo; without a clear-filters button.</p>
+
+<!-- S2 -->
+<h2 class="s" id="s2">S2 Course page (R7, R13, R16, R17, R18)</h2>
+<p class="cap">Route <code>/learn/[courseSlug]</code>. Public outline. The action panel changes with the viewer.</p>
+<div class="frame"><div class="url">/learn/applied-regression</div><div class="body">
+  <div class="two">
+    <div>
+      <h3 style="margin-top:0">Applied Regression</h3>
+      <p class="note">Sample Instructor B &middot; Data</p>
+      <p>Fit, check and explain regression models on real data sets. (Fake description.)</p>
+      <h4>Course outline</h4>
+      <p class="note">2 sections, 5 items. Lessons marked Preview are free to watch.</p>
+      <ol class="outline" aria-label="Course outline">
+        <li><strong>Section 1: Foundations</strong></li>
+        <li>Video &middot; What is regression? <span class="tag pre">Preview</span></li>
+        <li>Text &middot; Notation and assumptions</li>
+        <li>Quiz &middot; Check your understanding</li>
+        <li><strong>Section 2: Fitting models</strong></li>
+        <li>Video &middot; Least squares</li>
+      </ol>
+    </div>
+    <aside class="card" aria-label="Purchase">
+      <div class="cover">cover image</div>
+      <p style="font-size:24px;margin:4px 0"><strong>$49.00</strong></p>
+      <p class="note">One payment. Lifetime access.</p>
+      <p><span class="btn" style="width:100%;text-align:center">Buy this course</span></p>
+      <p><span class="btn sec" style="width:100%;text-align:center">Watch free preview</span></p>
+      <p class="note">You will pay on Stripe's secure page. Card details are never entered on this site.</p>
+    </aside>
+  </div>
+</div></div>
+<div class="three">
+  <div class="card"><strong>Visitor, free course</strong><p><span class="btn">Sign in to enroll</span></p><p class="note">After sign-in the learner returns here, then sees Enroll.</p></div>
+  <div class="card"><strong>Enrolled</strong><div class="progress" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" aria-label="Course progress"><span style="width:40%"></span></div><p>40% complete</p><p><span class="btn">Continue: Least squares</span></p></div>
+  <div class="card"><strong>Enrolled, course unpublished (R16)</strong><div class="banner warn">This course is no longer listed. You keep full access.</div><p><span class="btn">Continue</span></p></div>
+</div>
+<div class="three" style="margin-top:12px">
+  <div class="card"><strong>Not found or hidden</strong><p>&ldquo;We could not find that course.&rdquo; The same page for a draft, an unpublished course the viewer is not enrolled in, and a bad address (404, not 403).</p></div>
+  <div class="card"><strong>Revoked (refunded)</strong><div class="banner warn">Your access ended because this purchase was refunded.</div><p><span class="btn sec">View receipt</span></p></div>
+  <div class="card"><strong>Loading and error</strong><div class="skel"></div><div class="skel" style="width:60%"></div><div class="banner err" role="alert">Could not load this course. <u>Retry</u></div></div>
+</div>
+
+<!-- S3 -->
+<h2 class="s" id="s3">S3 Checkout and return (R18, R19, R20, R21)</h2>
+<p class="cap">Buy sends the learner to Stripe's hosted page. The return page never grants access; it reads enrollment state and polls.</p>
+<div class="three">
+  <div class="frame"><div class="url">/learn/applied-regression/checkout/return?status=returned</div><div class="body">
+    <h3 style="margin-top:0">Confirming your payment</h3>
+    <p role="status">We are waiting for the payment provider to confirm. This usually takes a few seconds.</p>
+    <div class="skel" style="width:60%"></div>
+    <p class="note">Do not pay again. If you were charged you will get access as soon as it is confirmed.</p>
+  </div></div>
+  <div class="frame"><div class="url">same page, confirmed</div><div class="body">
+    <h3 style="margin-top:0">You are in</h3>
+    <div class="banner ok" role="status">Payment confirmed. Applied Regression is unlocked.</div>
+    <p><span class="btn">Start the course</span></p>
+    <p class="note">A receipt was sent by email. Payment history: My learning.</p>
+  </div></div>
+  <div class="frame"><div class="url">same page, slow or failed</div><div class="body">
+    <h3 style="margin-top:0">Still waiting</h3>
+    <div class="banner warn" role="status">Confirmation is taking longer than usual. Your access will appear on My learning once the payment is confirmed.</div>
+    <p><span class="btn sec">Check again</span> <span class="btn sec">Go to My learning</span></p>
+    <hr>
+    <div class="banner err" role="alert">Payment was not completed. You have not been charged.</div>
+    <p><span class="btn">Try again</span></p>
+  </div></div>
+</div>
+<p class="note">Also: already enrolled (the Buy button is replaced by Continue; a second checkout is refused). Cancelled checkout returns to the course page with an info banner &ldquo;Checkout cancelled. You have not been charged.&rdquo;</p>
+
+<!-- S4 -->
+<h2 class="s" id="s4">S4 Lesson player (R12, R13, R26, R27, R28, R40)</h2>
+<p class="cap">Route <code>/learn/[courseSlug]/[itemId]</code>. Video, text, and the blocked states.</p>
+<div class="frame"><div class="url">/learn/applied-regression/least-squares</div>
+<nav class="top" aria-label="Course"><a href="#s2">&larr; Applied Regression</a><span class="sp"></span><span>40% complete</span></nav>
+<div class="body"><div class="two">
+  <div>
+    <h3 style="margin-top:0">Least squares</h3>
+    <div class="player" role="group" aria-label="Video player">Video player (HTML5, native controls, captions track if provided)</div>
+    <div class="row" style="margin-top:12px"><span class="btn">Mark complete</span><span class="btn sec">Next: Quiz</span></div>
+    <p class="note" role="status">Marked complete automatically when the video ends. You can undo nothing here; completion is permanent in this version.</p>
+  </div>
+  <aside aria-label="Course outline">
+    <div class="progress" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" aria-label="Course progress"><span style="width:40%"></span></div>
+    <ol class="outline">
+      <li>&#10003; What is regression?</li>
+      <li>&#10003; Notation and assumptions</li>
+      <li class="cur" aria-current="page">Least squares</li>
+      <li>Quiz &middot; Check your understanding</li>
+    </ol>
+  </aside>
+</div></div></div>
+<div class="three">
+  <div class="card"><strong>Video loading</strong><div class="player" style="aspect-ratio:auto;min-height:80px" role="status">Preparing video...</div></div>
+  <div class="card"><strong>Video unavailable</strong><div class="banner err" role="alert">This video is unavailable right now. Try again, or continue with another lesson.</div><span class="btn sec">Try again</span></div>
+  <div class="card"><strong>Link expired</strong><div class="banner info" role="status">Your viewing session expired. Reloading the video...</div><p class="note">The player asks for a fresh signed link and resumes at the same time.</p></div>
+</div>
+<div class="three" style="margin-top:12px">
+  <div class="card"><strong>Unpaid (not enrolled, paid course)</strong><h4>This lesson is part of a paid course</h4><p>Buy the course to watch it.</p><span class="btn">Buy for $49.00</span></div>
+  <div class="card"><strong>Not signed in</strong><h4>Sign in to continue</h4><p>Free preview lessons play without an account.</p><span class="btn">Sign in</span></div>
+  <div class="card"><strong>Access denied</strong><h4>You do not have access to this lesson</h4><p>If you think this is a mistake, go back to the course page.</p><span class="btn sec">Back to course</span><p class="note">Suspended accounts see &ldquo;Your account is suspended&rdquo; with a contact line, on every page.</p></div>
+</div>
+<div class="frame"><div class="url">text lesson</div><div class="body">
+  <h3 style="margin-top:0">Notation and assumptions</h3>
+  <p>Rich text, images with alt text, and links, rendered by a sanitising renderer. (Fake content.)</p>
+  <p><span class="btn">Mark complete</span> <span class="btn sec">Next lesson</span></p>
+</div></div>
+
+<!-- S5 -->
+<h2 class="s" id="s5">S5 Quiz (R29, R30, R31, R32, R33)</h2>
+<p class="cap">Start, answer, submit, result. No answer key reaches the browser before submit.</p>
+<div class="three">
+  <div class="frame"><div class="url">quiz start</div><div class="body">
+    <h3 style="margin-top:0">Check your understanding</h3>
+    <ul><li>4 questions</li><li>Passing score: 70%</li><li>Attempts used: 1 of 3</li><li>Best score so far: 50%</li></ul>
+    <span class="btn">Start attempt 2</span>
+    <p class="note">At the limit the button is replaced by &ldquo;No attempts left. Your best score is 50%.&rdquo;</p>
+  </div></div>
+  <div class="frame"><div class="url">quiz in progress</div><div class="body">
+    <p class="note">Question 1 of 4</p>
+    <div class="q"><fieldset><legend>Which line minimises squared error?</legend>
+      <label class="opt"><input type="radio" name="a" checked> The least squares line</label>
+      <label class="opt"><input type="radio" name="a"> The median line</label>
+    </fieldset></div>
+    <div class="q"><fieldset><legend>Select all that apply: assumptions of linear regression</legend>
+      <label class="opt"><input type="checkbox" checked> Linearity</label>
+      <label class="opt"><input type="checkbox"> Perfect normality of every variable</label>
+    </fieldset><p class="note">Multiple choice is all or nothing.</p></div>
+    <span class="btn">Submit answers</span>
+    <p class="note" role="status">2 of 4 answered. Unanswered questions count as wrong. A submit button confirms with a dialog if any are blank.</p>
+  </div></div>
+  <div class="frame"><div class="url">result</div><div class="body">
+    <h3 style="margin-top:0">Attempt 2: 75%</h3>
+    <div class="banner ok" role="status"><strong>Passed.</strong> Passing score is 70%.</div>
+    <div class="q"><strong>Question 2</strong> was incorrect.
+      <div class="opt wrong">&#10007; Your answer: Perfect normality of every variable</div>
+      <div class="opt right">&#10003; Correct answer: Linearity <span class="note">(shown only if the instructor allows it)</span></div>
+    </div>
+    <span class="btn">Continue</span> <span class="btn sec">Retake (1 left)</span>
+  </div></div>
+</div>
+<div class="three" style="margin-top:12px">
+  <div class="card"><strong>Failed</strong><div class="banner warn" role="status"><strong>Not passed.</strong> 50%. You need 70%.</div></div>
+  <div class="card"><strong>Submit error</strong><div class="banner err" role="alert">Your answers were not saved. Nothing was counted. Try submitting again.</div><p class="note">Answers stay selected in the form.</p></div>
+  <div class="card"><strong>Not enrolled</strong><h4>Enroll to take this quiz</h4><span class="btn">See course</span></div>
+</div>
+
+<!-- S6 -->
+<h2 class="s" id="s6">S6 My learning (US-L9, R21, R28, R37)</h2>
+<div class="frame"><div class="url">/learn/my</div><div class="body">
+  <h3 style="margin-top:0">My learning</h3>
+  <h4>Courses</h4>
+  <ul style="list-style:none;padding:0;display:grid;gap:8px">
+    <li class="card"><div class="row"><strong style="flex:1">Applied Regression</strong><span>40%</span><span class="btn">Continue</span></div><div class="progress" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" aria-label="Applied Regression progress"><span style="width:40%"></span></div></li>
+    <li class="card"><div class="row"><strong style="flex:1">Intro to Statistics</strong><span class="tag">Complete</span><span class="btn sec">View certificate</span></div></li>
+  </ul>
+  <table><caption>Payments</caption><thead><tr><th scope="col">Date</th><th scope="col">Course</th><th scope="col">Amount</th><th scope="col">Status</th></tr></thead>
+  <tbody><tr><td>2026-10-01</td><td>Applied Regression</td><td>$49.00</td><td>Paid</td></tr><tr><td>2026-09-12</td><td>Data Cleaning in Practice</td><td>$29.00</td><td>Refunded</td></tr></tbody></table>
+</div></div>
+<div class="three">
+  <div class="card"><strong>Empty</strong><p>You have not enrolled in a course yet.</p><span class="btn">Browse courses</span></div>
+  <div class="card"><strong>Loading</strong><div class="skel"></div><div class="skel" style="width:80%"></div></div>
+  <div class="card"><strong>Error</strong><div class="banner err" role="alert">We could not load your courses. <u>Retry</u></div></div>
+</div>
+
+<!-- S7 -->
+<h2 class="s" id="s7">S7 Certificate, owner view (R33 to R37)</h2>
+<div class="frame"><div class="url">/learn/my?certificate=cert-demo</div><div class="body">
+  <div class="banner ok" role="status">Congratulations. You completed Intro to Statistics.</div>
+  <div class="cert" role="img" aria-label="Certificate of completion for Sample Learner, Intro to Statistics, 2026-10-12">
+    <div>Certificate of completion</div>
+    <div class="name">Sample Learner</div>
+    <div>has completed <strong>Intro to Statistics</strong></div>
+    <div>Instructor: Sample Instructor A &middot; 2026-10-12</div>
+    <div class="note">Certificate ID: DEMO-0000-FAKE</div>
+  </div>
+  <p class="row"><span class="btn">Download PDF</span><span class="btn sec">Copy verification link</span></p>
+  <p class="note">If the PDF is still being prepared the button reads &ldquo;Preparing your PDF...&rdquo; and the link already works.</p>
+</div></div>
+
+<!-- S8 -->
+<h2 class="s" id="s8">S8 Public verification (R35, R36, R37)</h2>
+<p class="cap">Route <code>/learn/certificates/[publicId]</code>. Public. Shows only the R35 fields. No navigation into the catalog beyond a footer link.</p>
+<div class="three">
+  <div class="frame"><div class="url">/learn/certificates/[publicId]</div><div class="body"><span class="tag free">Valid</span><h3>Certificate verified</h3><dl><dt>Learner</dt><dd>Sample Learner</dd><dt>Course</dt><dd>Intro to Statistics</dd><dt>Instructor</dt><dd>Sample Instructor A</dd><dt>Completed</dt><dd>2026-10-12</dd><dt>Certificate ID</dt><dd>DEMO-0000-FAKE</dd></dl></div></div>
+  <div class="frame"><div class="url">revoked</div><div class="body"><span class="tag rev">Revoked</span><h3>This certificate was revoked</h3><p>Revoked on 2026-10-20. It is no longer valid.</p><p class="note">Name, course and date are still shown so that someone holding a copy can match it. (Open question DQ3.)</p></div></div>
+  <div class="frame"><div class="url">not found</div><div class="body"><h3>Certificate not found</h3><p>Check the link or the certificate ID. IDs are case sensitive.</p><p class="note">A malformed ID and an unknown ID show the same message.</p></div></div>
+</div>
+
+<!-- S9 -->
+<h2 class="s" id="s9">S9 Phone width (R40)</h2>
+<p class="cap">360px wide. One column, outline collapses under the lesson, 44px touch targets, sticky bottom action bar for the main action.</p>
+<div class="phones">
+  <div class="phone"><nav class="top"><span class="logo">LearnHub</span><span class="sp"></span><span class="btn sec">Menu</span></nav><div class="in">
+    <label class="note" for="pq">Search by title</label><input id="pq" style="width:100%;min-height:44px;font-size:16px">
+    <p><span class="btn sec">Filters (2)</span></p>
+    <ul class="grid" style="list-style:none;padding:0"><li class="card"><div class="cover">cover</div><strong>Applied Regression</strong><div class="note">Sample Instructor B</div><strong>$49.00</strong></li></ul>
+  </div></div>
+  <div class="phone"><nav class="top"><a href="#s2">&larr; Course</a><span class="sp"></span>40%</nav><div class="in">
+    <div class="player">Video</div>
+    <h4>Least squares</h4>
+    <p><span class="btn" style="width:100%;text-align:center">Mark complete</span></p>
+    <details open><summary style="min-height:44px">Outline (4 items)</summary><ol class="outline"><li>&#10003; What is regression?</li><li class="cur">Least squares</li><li>Quiz</li></ol></details>
+  </div></div>
+  <div class="phone"><div class="in"><h4>Check your understanding</h4><p class="note">Question 1 of 4</p><div class="q"><fieldset><legend>Which line minimises squared error?</legend><label class="opt"><input type="radio" name="b"> The least squares line</label><label class="opt"><input type="radio" name="b"> The median line</label></fieldset></div><p><span class="btn" style="width:100%;text-align:center">Next question</span></p></div></div>
+</div>
+
+<h2 class="s">What this mockup does not show</h2>
+<ul>
+<li>Real visual identity: colors, name and logo are placeholders (open question Q4).</li>
+<li>Working interaction, real video, focus order, screen reader output or contrast measurement. It has not been rendered or tested by its author.</li>
+<li>Sign-in and sign-up forms, email templates, and the Stripe hosted page, which is not ours to design.</li>
+<li>Dark mode, right-to-left text, and print layout of the certificate PDF.</li>
+</ul>
+</main>
+</body>
+</html>
